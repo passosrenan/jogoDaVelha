@@ -30,6 +30,6 @@
     <fragment
         android:id="@+id/fragmentPreferences"
         android:name="br.senai.sp.cotia.jogodavelhaapp.fragment.FragmentPreferences"
-        android:label="fragment_preferences"
+        android:label="preferencias"
         tools:layout="@layout/fragment_preferences" />
 </navigation>

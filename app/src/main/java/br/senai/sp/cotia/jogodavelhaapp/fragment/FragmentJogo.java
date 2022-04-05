@@ -4,10 +4,15 @@ import android.graphics.Color;
 import android.location.GnssAntennaInfo;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -19,6 +24,7 @@ import java.util.Random;
 
 import br.senai.sp.cotia.jogodavelhaapp.R;
 import br.senai.sp.cotia.jogodavelhaapp.databinding.FragmentJogoBinding;
+import br.senai.sp.cotia.jogodavelhaapp.util.PrefUtil;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -46,10 +52,16 @@ public class FragmentJogo extends Fragment {
     //variável para contar o numero de jogadas
     private int numJogadas = 0;
 
+    //variaveis do placar
+    private int placarJ1=0, placarJ2=0;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        //habilita o menu neste fragent
+        setHasOptionsMenu(true);
         //instanciando o binding
         binding = FragmentJogoBinding.inflate(inflater, container, false);
 
@@ -82,8 +94,11 @@ public class FragmentJogo extends Fragment {
         random = new Random();
 
         //define os símbolos dos jogadores
-        simj1 = "x";
-        simj2 = "O";
+        simj1 = PrefUtil.getSimboloJ1(getContext());
+        simj2 = PrefUtil.getSimboloJ1(getContext());
+
+        binding.textView.setText(getResources().getString(R.string.jogador1,simj1));
+        binding.textView3.setText(getResources().getString(R.string.jogador2,simj2));
 
         //sorteia quem inicia o jogo
         sorteia();
@@ -93,6 +108,25 @@ public class FragmentJogo extends Fragment {
 
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        //verifica qual botao foi clicado no menu
+
+        switch (item.getItemId()){
+            case R.id.menu_resetar:
+                placarJ2=0;
+                placarJ1=0;
+                limpaCampos();
+                atualizaPlacar();
+                break;
+            case R.id.menu_pref:
+                NavHostFragment.findNavController(FragmentJogo.this).navigate(R.id.action_fragmentJogo_to_fragmentPreferences);
+        }
+
+        return true;
+    }
+
     private void sorteia() {
         //nao precisa do igual a true porque o método está implícito
         if (random.nextBoolean()) {
@@ -100,6 +134,13 @@ public class FragmentJogo extends Fragment {
         } else {
             simboolo = simj2;
         }
+
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_main, menu);
+        super.onCreateOptionsMenu(menu, inflater);
 
     }
 
@@ -148,6 +189,12 @@ public class FragmentJogo extends Fragment {
         return false;
 
     }
+
+    private void atualizaPlacar(){
+        binding.textView2.setText(placarJ2+"");
+        binding.textView4.setText(placarJ1+"");
+    }
+
     private void limpaCampos(){
         for(String[] vetor: tabuleiro){
             Arrays.fill(vetor, "");
@@ -203,6 +250,16 @@ public class FragmentJogo extends Fragment {
         if (numJogadas >= 5 && venceu()) {
             //exibe um Toast informando que o jogador venceu
             Toast.makeText(getContext(),R.string.vencedor, Toast.LENGTH_LONG).show();
+
+            if(simboolo.equals(simj1)){
+                placarJ1++;
+            }else{
+                placarJ2++;
+
+            }
+            atualizaPlacar();
+
+
             limpaCampos();
         }else if(numJogadas == 9){
             Toast.makeText(getContext(), R.string.velha, Toast.LENGTH_LONG).show();
