@@ -11,5 +11,7 @@
     <color name="back">#69d2cd</color>
     <color name="cinza">#d2d2d2</color>
     <color name="backu">#72efdd</color>
+    <color name= "text">#48bfe3</color>
+    <color name="red">#d90429</color>
 
 </resources>

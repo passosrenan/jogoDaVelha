@@ -1,10 +1,13 @@
 package br.senai.sp.cotia.jogodavelhaapp.fragment;
 
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.location.GnssAntennaInfo;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -36,6 +39,8 @@ public class FragmentJogo extends Fragment {
 
     private FragmentJogoBinding binding;
 
+    private AlertDialog alerta;
+
     //vetor para agrupar botoes
     private Button[] botoes;
 
@@ -44,7 +49,10 @@ public class FragmentJogo extends Fragment {
     private String[][] tabuleiro;
 
     //varivel para os simbolos
-    private String simj1, simj2, simboolo;
+    private String simj1, simj2, simboolo, nomej1, nomej2;
+
+     ;
+
 
     //variavel Random para sortear quem começa
     private Random random;
@@ -55,10 +63,37 @@ public class FragmentJogo extends Fragment {
     //variaveis do placar
     private int placarJ1=0, placarJ2=0;
 
+    private int placarVelha=0;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        AlertDialog.Builder mensagem  = new AlertDialog.Builder(getContext());
+
+        mensagem.setTitle("Atenção!!!");
+
+        mensagem.setMessage("Tem certeza que deseja resetar?");
+
+
+        mensagem.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                    atualizaPlacar();
+                    placarJ1=0;
+                    placarJ2=0;placarVelha=0;
+                    limpaCampos();
+
+
+            }
+        });
+        mensagem.setNegativeButton("Não", null);
+
+        mensagem.setCancelable(false);
+
+        alerta = mensagem.create();
+
 
         //habilita o menu neste fragent
         setHasOptionsMenu(true);
@@ -95,18 +130,21 @@ public class FragmentJogo extends Fragment {
 
         //define os símbolos dos jogadores
         simj1 = PrefUtil.getSimboloJ1(getContext());
-        simj2 = PrefUtil.getSimboloJ1(getContext());
+        simj2 = PrefUtil.getSimboloJ2(getContext());
+        nomej1 = PrefUtil.getNomeJ1(getContext());
+        nomej2 = PrefUtil.getNomeJ2(getContext());
 
-        binding.textView.setText(getResources().getString(R.string.jogador1,simj1));
-        binding.textView3.setText(getResources().getString(R.string.jogador2,simj2));
+        binding.textView.setText(getResources().getString(R.string.jogador1, nomej1, simj1));
+        binding.textView3.setText(getResources().getString(R.string.jogador2, nomej2, simj2));
 
         //sorteia quem inicia o jogo
         sorteia();
 
-
         return binding.getRoot();
 
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -115,13 +153,15 @@ public class FragmentJogo extends Fragment {
 
         switch (item.getItemId()){
             case R.id.menu_resetar:
-                placarJ2=0;
-                placarJ1=0;
-                limpaCampos();
-                atualizaPlacar();
+                alerta.show();
                 break;
             case R.id.menu_pref:
                 NavHostFragment.findNavController(FragmentJogo.this).navigate(R.id.action_fragmentJogo_to_fragmentPreferences);
+                break;
+
+            case R.id.menu_inicio:
+                NavHostFragment.findNavController(FragmentJogo.this).navigate(R.id.action_fragmentJogo_to_fragmentInicio);
+                break;
         }
 
         return true;
@@ -143,6 +183,7 @@ public class FragmentJogo extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
 
     }
+
 
     private void atualizaVez() {
         //verifica de quem é a vez e pinta o placar do jogoador em questao
@@ -193,6 +234,7 @@ public class FragmentJogo extends Fragment {
     private void atualizaPlacar(){
         binding.textView2.setText(placarJ2+"");
         binding.textView4.setText(placarJ1+"");
+        binding.textVelha2.setText(placarVelha+"");
     }
 
     private void limpaCampos(){
@@ -257,17 +299,15 @@ public class FragmentJogo extends Fragment {
                 placarJ2++;
 
             }
-            atualizaPlacar();
-
-
             limpaCampos();
+            atualizaPlacar();
         }else if(numJogadas == 9){
+            placarVelha++;
             Toast.makeText(getContext(), R.string.velha, Toast.LENGTH_LONG).show();
             limpaCampos();
         }else{
             //inverter a vez
-            simboolo = simboolo == simj1 ? simj2 : simj1;
-
+            simboolo = simboolo.equals(simj1) ? simj2 : simj1;
             atualizaVez();
         }
 
@@ -278,4 +318,12 @@ public class FragmentJogo extends Fragment {
 
     };
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        AppCompatActivity myActivity = (AppCompatActivity) getActivity();
+
+        myActivity.getSupportActionBar().show();
+        myActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+    }
 }

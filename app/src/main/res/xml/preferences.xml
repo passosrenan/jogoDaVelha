@@ -11,4 +11,7 @@
         android:title="Simbolodo jogador 2"
         android:summary="Escolha o simbolo do jogador 2"
         />
+
+
+
 </androidx.preference.PreferenceScreen>

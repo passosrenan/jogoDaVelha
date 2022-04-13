@@ -24,6 +24,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="8"
+            android:textColor="@color/text"
             android:width="0dp"
             android:textStyle="bold"
             android:padding="10dp"
@@ -32,6 +33,7 @@
         <TextView
             android:id="@+id/text_view2"
             android:layout_width="0dp"
+            android:textColor="@color/text"
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:padding="2dp"
@@ -53,6 +55,7 @@
             android:id="@+id/text_view3"
             android:layout_width="0dp"
             android:textStyle="bold"
+            android:textColor="@color/text"
             android:layout_height="wrap_content"
             android:layout_weight="8"
             android:padding="10dp"
@@ -62,16 +65,51 @@
             android:id="@+id/text_view4"
             android:layout_width="0dp"
             android:textStyle="bold"
+            android:textColor="@color/text"
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:padding="10dp"
             android:text="0"
-
             android:textAlignment="center" />
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/linear_Velha"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/LinearJ_2">
+
+        <TextView
+            android:id="@+id/text_viewVelha"
+            android:layout_width="0dp"
+            android:textStyle="bold"
+            android:textColor="@color/red"
+            android:layout_height="wrap_content"
+            android:layout_weight="8"
+            android:padding="10dp"
+            android:text="Velha" />
+
+        <TextView
+            android:id="@+id/text_velha2"
+            android:layout_width="0dp"
+            android:textStyle="bold"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:padding="10dp"
+            android:textColor="@color/red"
+            android:text="0"
+            android:textAlignment="center" />
+
+
+    </LinearLayout>
+
+
+
  <TableLayout
+     android:layout_marginTop="50dp"
      android:layout_width="match_parent"
      android:layout_height="wrap_content"
      app:layout_constraintLeft_toLeftOf="parent"
@@ -108,6 +146,9 @@
              android:textSize="50dp"
              android:layout_height="150dp"
              android:layout_weight="1"/>
+
+
+
 
      </TableRow>
 
